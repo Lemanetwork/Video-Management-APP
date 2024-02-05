@@ -1,7 +1,11 @@
 const { User } = require("../../db");
+const { validateUsername } = require("../../utils/validateUser")
 
 const deleteUsersController = async (username) => {
-  await User.destroy({ where: { username } });
+  const userValidation = await validateUsername(username)
+  
+  if (userValidation) await User.destroy({ where: { username } });
+  else throw Error("User does not exists")
 }
 
 module.exports = deleteUsersController;

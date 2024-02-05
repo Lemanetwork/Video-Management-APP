@@ -11,6 +11,7 @@ module.exports = (sequelize) => {
       },
       title: {
         type: DataTypes.STRING,
+        unique: true,
         allowNull: false,
       },
       description: {
@@ -29,7 +30,11 @@ module.exports = (sequelize) => {
         type: DataTypes.DATEONLY,
         allowNull: false,
       },
-      private: {
+      likes: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      is_private: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
       },
