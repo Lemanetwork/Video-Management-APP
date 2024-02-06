@@ -6,7 +6,7 @@ const getVideosByLikesController = require("../../controllers/videos/getVideos/g
 
 const getVideosHandler = async (req, res) => {
     const { id } = req.params;
-    const { userId, private, likes } = req.query
+    const { userId, is_private, likes } = req.query
     
     let videos;
 
@@ -15,8 +15,8 @@ const getVideosHandler = async (req, res) => {
             videos = await getVideosByIdController(id);
         } else if (userId) { 
             videos = await getVideosByUserIdController(userId);
-        } else if (private) {
-            videos = await getVideosByStatusController(private);
+        } else if (is_private) {
+            videos = await getVideosByStatusController(is_private);
         } else if (likes) { 
             videos = await getVideosByLikesController(likes);
         } else {

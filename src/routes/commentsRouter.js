@@ -3,6 +3,6 @@ const postCommentsHandler = require("../handlers/comments/postCommentsHandler")
 
 const commentsRouter = Router();
 
-commentsRouter.post("/:UserId/:VideoId", postCommentsHandler);
+commentsRouter.post("/", postCommentsHandler);
 
 module.exports = commentsRouter;

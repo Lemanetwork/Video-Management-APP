@@ -1,12 +1,11 @@
 const postVideosController = require("../../controllers/videos/postVideosController");
 
 const postVideosHandler = async (req, res) => {
-    const { title, description, url, credits, publication_date, private, UserId } = req.body;
+    const { title, description, url, credits, publication_date, is_private } = req.body;
+    const UserId = req.user.userId
 
-    if (!title || !description || !url || !credits || !publication_date || !private || !UserId)
-        return res.status(400).json({ error: "We are missing some important information about the Video" });    
     try {
-        const newVideo = await postVideosController(title, description, url, credits, publication_date, private, UserId);
+        const newVideo = await postVideosController(title, description, url, credits, publication_date, is_private, UserId);
         
         res.status(200).json(newVideo);
     } catch (error) {

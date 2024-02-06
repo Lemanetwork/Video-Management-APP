@@ -3,6 +3,6 @@ const postLikesHandler = require("../handlers/likes/postLikesHandler")
 
 const likesRouter = Router();
 
-likesRouter.post("/:UserId/:VideoId", postLikesHandler);
+likesRouter.post("/", postLikesHandler);
 
 module.exports = likesRouter;

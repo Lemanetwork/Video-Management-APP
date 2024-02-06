@@ -1,7 +1,7 @@
 const postLikesController = require("../../controllers/likes/postLikesController");
 
 const postLikesHandler = async (req, res) => {
-    const { UserId, VideoId } = req.params;
+    const { UserId, VideoId } = req.body;
 
     try {
         const newLike = await postLikesController(UserId, VideoId);
