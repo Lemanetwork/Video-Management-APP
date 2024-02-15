@@ -22,10 +22,6 @@ module.exports = {
             .min(5)
             .max(60)
             .required(),
-    
-        publication_date: Joi.date()
-            .iso()
-            .required(),
         
         likes: Joi.number(),
         

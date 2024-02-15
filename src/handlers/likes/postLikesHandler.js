@@ -6,7 +6,7 @@ const postLikesHandler = async (req, res) => {
     try {
         const newLike = await postLikesController(UserId, VideoId);
         
-        res.status(200).json(newLike);
+        res.status(201).json(newLike);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }

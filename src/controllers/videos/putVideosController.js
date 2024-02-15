@@ -9,9 +9,9 @@ const putVideoController = async (id, newVideoData) => {
             const titleValidation = await validateTitle(newVideoData.title);
 
             if (titleValidation)
-                throw Error("Title already exists");
+                throw new Error("Title already exists");
         }
-    } else throw Error("Video does not exists");
+    } else throw new Error("Video does not exists");
 
     const updatedVideo = await Video.update(newVideoData, { where: { id }, returning: true });
 

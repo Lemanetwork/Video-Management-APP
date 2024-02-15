@@ -5,7 +5,7 @@ const getUsersByUsernameController = async (username) => {
     
     const user = await User.findOne({ where: { username } });
     
-    if (!user) throw Error(`User was not found`);
+    if (!user) throw new Error("User was not found");
     
     return user;
 }

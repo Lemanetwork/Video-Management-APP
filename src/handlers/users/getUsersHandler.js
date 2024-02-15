@@ -1,19 +1,22 @@
+const getAllUsersController = require("../../controllers/users/getAllUsersController");
 const getUsersByUsernameController = require("../../controllers/users/getUsersByUsernameController");
-const getUsersController = require("../../controllers/users/getUsersController");
+
 
 const getUsersHandler = async (req, res) => {
     const { username } = req.query;
-
+    
     try {
-        if(username) {
+        if (username) {
             const user = await getUsersByUsernameController(username);
+
             res.status(200).json(user);
         } else {
-            const allUsers = await getUsersController();
-            res.status(200).json(allUsers);
+            const allUsers = await getAllUsersController();
+
+            res.status(200).json(allUsers);    
         }
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(404).json({ error: error.message });
     }
 }
 

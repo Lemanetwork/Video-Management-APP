@@ -10,14 +10,14 @@ const putUsersController = async (username, newUserData) => {
             const usernameValidation = await validateUsername(newUserData.username);
             
             if (usernameValidation)
-                throw Error("Username already exists");
+                throw new Error("Username already exists");
         }
 
         if (newUserData.email) {
             const emailValidation = await validateEmail(newUserData.email);
 
             if (emailValidation)
-                throw Error("Email already exists");
+                throw new Error("Email already exists");
         }
     } else throw Error("User does not exists");
 

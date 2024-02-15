@@ -1,0 +1,532 @@
+openapi: 3.0.0
+info:
+  title: Video Management API
+  description: This APP has been developed from the Backend side. The API provides a CRUD for Videos and a CRUD for Users, while giving registered users the options to comment and like Videos. All information is stored in a SQL databade. <br><br>
+    These are the technologies implemented in the creation of this Backend. <br>
+    <i> * Node.js <br>
+    * Express.js <br>
+    * PostgreSQL <br>
+    * Sequelize <br>
+    * Swagger(OpenAPI 3.0) <br>
+    * JSON Web Token (JWT) <br>
+    * Bcrypt <br>
+    * Joi <br>
+    * Jest <br></i>
+  version: 1.0.0
+  contact:
+    name: Luis Manjarrez
+    email: lema244@hotmail.com
+    url: www.linkedin.com/in/luis-manjarrez
+    x-github: github.com/Lemanetwork
+servers:
+  - url: http://localhost:3001
+    description: This is the sandbox enviroment.
+tags:
+  - name: Login
+    description: Login to access the app.
+  - name: Users
+    description: Manage your app users.
+  - name: Videos
+    description: Manage your app videos.
+  - name: Comments
+    description: Post and read video comments.
+  - name: Likes
+    description: Like your favorite videos.
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Login
+      summary: Gives access to the app to registered users.
+      description: Users with a valid username and password can login in the app.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: lema244
+                password:
+                  type: string
+                  example: mypassword123
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: We receive the token to access the app.
+        '401':
+          description: We receive an autentication error message "Invalid credentials".
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Creates new users.
+      description: Everybody can register to have full access to actions such as commenting, liking, and watching private videos.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: We receive the user data as confirmation that it has been successfully created.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: We recaive an error message.
+    get:
+      tags:
+        - Users
+      security:
+      - bearerAuth: []
+      summary: Returns an array with the users of the database.
+      description: Only registered users can access this endpoint.
+      responses:
+        '200':
+          description: We receive an array of users.
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: object
+        '404':
+          description:  We receive an error message "There are no users".
+  /users/:
+    get:
+      tags:
+        - Users
+      security:
+      - bearerAuth: []
+      summary: Search for a user by username.
+      description: Only registered users can access this endpoint.
+      parameters:
+        - name: username
+          in: query
+          required: true
+          description: The username is required to find the user.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: We receive an json with the information about the user.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UserResponse'
+        '404':
+          description: We receive an error message "User was not found".
+  /users/{username}:
+    put:
+      tags:
+        - Users
+      security:
+      - bearerAuth: []
+      summary: Updates users information.
+      description: Registered users can update their information.
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: The username is required to find the user that will be updated.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Luis
+                last_name:
+                  type: string
+                  example: Manjarrez
+                username:
+                  type: string
+                  example: lema244
+                email:
+                  type: string
+                  example: lema244@hotmail.com
+                password:
+                  type: string
+                  example: mypassword123
+              required:
+                - username
+      responses:
+        '200':
+          description: We receive the user data as confirmation that it has been successfully updated.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: We receive an error message "User does not exists".
+    delete:
+      tags:
+        - Users
+      security:
+      - bearerAuth: []
+      summary: Delete users.
+      description: Only registered users can delete users.
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: The username is required to find the user that will be deleted.
+          schema:
+            type: string
+      responses:
+        '204':
+          description: We receive a confirmation message "User was deleted successfully".
+        '400':
+          description: We receive an error message "User does not exists".
+  /videos:
+    post:
+      tags:
+        - Videos
+      security:
+      - bearerAuth: []
+      summary: Post new videos.
+      description: Only registered users can post videos.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Video'
+      responses:
+        '201':
+          description: We receive the video data as confirmation that it has been successfully posted.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/VideoResponse'
+        '400':
+          description: We receive an error message.
+    get:
+      tags:
+        - Videos
+      security:
+      - bearerAuth: []
+      summary: Returns an array of videos.
+      description: Registered users can access to public and private videos in the app, but unregistered users can only access plubic videos.
+      responses:
+        '200':
+          description: We receive an array of videos.
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: object
+        '404':
+          description:  We receive an error message.
+  /videos/:
+    get:
+      tags:
+        - Videos
+      security:
+      - bearerAuth: []
+      summary: Search for videos according to different parameters.
+      description: Registered users can access to public and private videos in the app, but unregistered users can only access plubic videos.
+      parameters:
+        - name: id
+          in: query
+          description: Search a video by video id.
+          schema:
+            type: number
+        - name: userId
+          in: query
+          description: Search videos by user id.
+          schema:
+            type: string
+        - name: is_private
+          in: query
+          description: Search videos by status.
+          schema:
+            type: boolean
+        - name: likes
+          in: query
+          description: Search videos by number of likes.
+          schema:
+            type: number
+      responses:
+        '200':
+          description: We receive an array of videos.
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  type: object
+        '404':
+          description:  We receive an error message.
+  /videos/{id}:
+    put:
+      tags:
+        - Videos
+      security:
+      - bearerAuth: []
+      summary: Updates video information.
+      description: Only registered users can update video information.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The video id is required to find the video that will be updated.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/Video'
+      responses:
+        '200':
+          description: We receive the video data as confirmation that it has been successfully updated.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/VideoResponse'
+        '400':
+          description: We recaive an error message "Video does not exists"
+    delete:
+      tags:
+        - Videos
+      security:
+      - bearerAuth: []
+      summary: Delete videos.
+      description: Only registered users can delete videos.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The video id is required to find the video that will be deleted.
+          schema:
+            type: string
+      responses:
+        '204':
+          description: We receive a confirmation message "Video with id {id} was deleted successfully".
+        '400':
+          description: We recaive an error message "Video was not found"
+  /comments:
+    post:
+      tags:
+        - Comments
+      security:
+      - bearerAuth: []
+      summary: Posts new comments.
+      description: Only registered users can comment the videos.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        '201':
+          description: We receive the comment data as confirmation that it has been successfully posted.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/CommentResponse'
+        '400':
+          description: We recaive an error message.
+    get:
+      tags:
+        - Comments
+      security:
+      - bearerAuth: []
+      summary: Returns an array of comments.
+      description: Only registered users can see all the comments.
+      responses:
+        '200':
+          description: We receive an array of comments.
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: object
+        '404':
+          description:  We receive an error message "There are no comments".
+  /likes:
+    post:
+      tags:
+        - Likes
+      security:
+      - bearerAuth: []
+      summary: Like videos.
+      description: Only registered users can like the videos.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Like'
+      responses:
+        '201':
+          description: We receive a confirmation message "You liked the video".
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/LikeResponse'
+        '400':
+          description: We receive an error message.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Luis
+        last_name:
+          type: string
+          example: Manjarrez
+        username:
+          type: string
+          example: lema244
+        email:
+          type: string
+          example: lema244@hotmail.com
+        password:
+          type: string
+          example: mypassword123
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 7e16f739-6cb9-47e2-9687-5ed82ecb4a52
+        name:
+          type: string
+          example: Luis
+        last_name:
+          type: string
+          example: Manjarrez
+        username:
+          type: string
+          example: lema244
+        email:
+          type: string
+          example: lema244@hotmail.com
+        password:
+          type: string
+          example: mypassword123
+    Video:
+      type: object
+      properties:
+        title:
+          type: string
+          example: The best cars for 2024
+        description:
+          type: string
+          example: Take a look at the best cars for 2024.
+        url:
+          type: string
+          example: http://bestcarsfor2024.mp4
+        credits:
+          type: string
+          example: Video created in collaboration with Hot Wheels.
+        is_private:
+          type: boolean
+          example: true
+    VideoResponse:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 2
+        title:
+          type: string
+          example: The best cars for 2024
+        description:
+          type: string
+          example: Take a look at the best cars for 2024.
+        url:
+          type: string
+          example: http://bestcarsfor2024.mp4
+        credits:
+          type: string
+          example: Video created in collaboration with Hot Wheels.
+        publication_date:
+          type: string
+          example: 2023-12-31
+        likes:
+          type: number
+          example: 152
+        is_private:
+          type: boolean
+          example: true
+    Comment:
+      type: object
+      properties:
+        comment:
+          type: string
+          example: Excellent video!
+        UserId:
+          type: string
+          example: 7e16f739-6cb9-47e2-9687-5ed82ecb4a52
+        VideoId:
+          type: number
+          example: 7
+      required:
+        - comment
+        - UserId
+        - VideoId
+    CommentResponse:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 2
+        comment:
+          type: string
+          example: Excellent video!
+        UserId:
+          type: string
+          example: 7e16f739-6cb9-47e2-9687-5ed82ecb4a52
+        VideoId:
+          type: number
+          example: 7
+    Like:
+      type: object
+      properties:
+        UserId:
+          type: string
+          example: 7e16f739-6cb9-47e2-9687-5ed82ecb4a52
+        VideoId:
+          type: number
+          example: 7
+      required:
+        - UserId
+        - VideoId
+    LikeResponse:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 2
+        UserId:
+          type: string
+          example: 7e16f739-6cb9-47e2-9687-5ed82ecb4a52
+        VideoId:
+          type: number
+          example: 7

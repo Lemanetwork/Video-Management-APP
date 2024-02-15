@@ -8,7 +8,7 @@ const postCommentsHandler = async (req, res) => {
     try {
         const newComment = await postCommentsController(UserId, VideoId, comment);
         
-        res.status(200).json(newComment);
+        res.status(201).json(newComment);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }

@@ -11,6 +11,6 @@ mainRouter.use("/users", usersRouter);
 mainRouter.use("/videos", videosRouter);
 mainRouter.use("/comments", commentsRouter);
 mainRouter.use("/likes", likesRouter);
-mainRouter.use("/auth", authRouter)
+mainRouter.use("/auth", authRouter);
 
 module.exports = mainRouter;

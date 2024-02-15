@@ -5,27 +5,29 @@ const getVideosByStatusController = require("../../controllers/videos/getVideos/
 const getVideosByLikesController = require("../../controllers/videos/getVideos/getVideosByLikesController");
 
 const getVideosHandler = async (req, res) => {
-    const { id } = req.params;
-    const { userId, is_private, likes } = req.query
-    
-    let videos;
+    const { id, userId, is_private, likes } = req.query;
+    let token = false;
+
+    if (req.user) token = true;
+
+    let videos = null;
 
     try {
         if (id) {
-            videos = await getVideosByIdController(id);
+            videos = await getVideosByIdController(id, token);
         } else if (userId) { 
-            videos = await getVideosByUserIdController(userId);
+            videos = await getVideosByUserIdController(userId, token);
         } else if (is_private) {
-            videos = await getVideosByStatusController(is_private);
+            videos = await getVideosByStatusController(is_private, token);
         } else if (likes) { 
-            videos = await getVideosByLikesController(likes);
+            videos = await getVideosByLikesController(likes, token);
         } else {
-            videos = await getVideosController();
+            videos = await getVideosController(token);
         }
         res.status(200).json(videos);
         
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(404).json({ error: error.message });
     }
 }
 

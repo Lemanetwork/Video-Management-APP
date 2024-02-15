@@ -29,6 +29,7 @@ module.exports = (sequelize) => {
       publication_date: {
         type: DataTypes.DATEONLY,
         allowNull: false,
+        defaultValue: sequelize.literal('CURRENT_DATE'),
       },
       likes: {
         type: DataTypes.INTEGER,

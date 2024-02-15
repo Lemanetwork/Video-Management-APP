@@ -9,9 +9,9 @@ const postUsersController = async (name, last_name, username, email, password) =
     const emailValidation = await validateEmail(email);
     
     if (usernameValidation)
-        throw Error("Username already exists");
+        throw new Error("Username already exists");
     else if (emailValidation)
-        throw Error("Email already exists");
+        throw new Error("Email already exists");
     else {
         const newUser = await User.create({ name, last_name, username, email, password });
         return newUser;
