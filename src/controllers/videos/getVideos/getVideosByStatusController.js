@@ -8,7 +8,7 @@ const getVideosByStatusController = async (is_private, token) => {
     else if (is_private === "false")
         videos = await Video.findAll({ where: { is_private: false } });
     
-    if (!videos) throw new Error("There are not videos with this status or the video status is private");
+    if (!videos) throw new Error("There are no videos with this status.");
     
     return videos;
 }

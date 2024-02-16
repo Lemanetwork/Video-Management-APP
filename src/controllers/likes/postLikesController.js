@@ -13,9 +13,9 @@ const postLikesController = async (UserId, VideoId) => {
     video.likes += 1;
     await video.save();
 
-    await Like.create({ UserId, VideoId });
+    const newLike = await Like.create({ UserId, VideoId });
 
-    return { message: "You liked the video" };
+    return newLike;
 }
 
 module.exports = postLikesController;

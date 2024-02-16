@@ -14,6 +14,7 @@ const postUsersController = async (name, last_name, username, email, password) =
         throw new Error("Email already exists");
     else {
         const newUser = await User.create({ name, last_name, username, email, password });
+        
         return newUser;
     }
 

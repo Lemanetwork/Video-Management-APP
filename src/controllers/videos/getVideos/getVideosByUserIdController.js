@@ -8,7 +8,7 @@ const getVideosByUserIdController = async (userId, token) => {
     else 
         videos = await Video.findAll({ where: { UserId: userId, is_private: false } });
 
-    if (!videos) throw new Error("There are not videos with this user id or they are privete");
+    if (videos.length === 0) throw new Error("There are no videos with this user id.");
     
     return videos;
 }

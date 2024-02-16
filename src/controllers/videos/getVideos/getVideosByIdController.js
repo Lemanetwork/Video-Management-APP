@@ -8,7 +8,7 @@ const getVideosByIdController = async (id, token) => {
     else 
         video = await Video.findOne({ where: {id, is_private: false}});
     
-    if (!video) throw new Error("Video was not found or it is private");
+    if (!video) throw new Error("Video was not found.");
     
     return video;
 }

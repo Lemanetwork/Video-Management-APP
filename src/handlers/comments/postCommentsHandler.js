@@ -1,10 +1,9 @@
 const postCommentsController = require("../../controllers/comments/postCommentsController");
 
 const postCommentsHandler = async (req, res) => {
-    const { UserId, VideoId, comment } = req.body;
+    const { VideoId, comment } = req.body;
+    const UserId = req.user.userId
 
-    if (!comment)
-        return res.status(400).json({ error: "Please! Add a comment" });    
     try {
         const newComment = await postCommentsController(UserId, VideoId, comment);
         

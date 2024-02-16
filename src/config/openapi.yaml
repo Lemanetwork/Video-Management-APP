@@ -1,22 +1,23 @@
 openapi: 3.0.0
 info:
-  title: Video Management API
+  title: Video Management APP
   description: This APP has been developed from the Backend side. The API provides a CRUD for Videos and a CRUD for Users, while giving registered users the options to comment and like Videos. All information is stored in a SQL databade. <br><br>
-    These are the technologies implemented in the creation of this Backend. <br>
-    <i> * Node.js <br>
+    These are the technologies implemented in the creation of this Backend (Server + RESTful API + Database). <br><i>
+    * JavaScript <br>
+    * Node.js <br>
     * Express.js <br>
-    * PostgreSQL <br>
-    * Sequelize <br>
     * Swagger(OpenAPI 3.0) <br>
     * JSON Web Token (JWT) <br>
     * Bcrypt <br>
     * Joi <br>
-    * Jest <br></i>
+    * Jest <br>
+    * PostgreSQL <br>
+    * Sequelize <br></i>
   version: 1.0.0
   contact:
-    name: Luis Manjarrez
+    name: Ing. Luis Manjarrez
     email: lema244@hotmail.com
-    url: www.linkedin.com/in/luis-manjarrez
+    x-linkedin: www.linkedin.com/in/luis-manjarrez
     x-github: github.com/Lemanetwork
 servers:
   - url: http://localhost:3001
@@ -187,7 +188,7 @@ paths:
             type: string
       responses:
         '204':
-          description: We receive a confirmation message "User was deleted successfully".
+          description: We receive the status code 204 as confirmation message.
         '400':
           description: We receive an error message "User does not exists".
   /videos:
@@ -257,12 +258,12 @@ paths:
             type: boolean
         - name: likes
           in: query
-          description: Search videos by number of likes.
+          description: Displays the number of videos you specify in the field sorted in ascending order by number of likes.
           schema:
             type: number
       responses:
         '200':
-          description: We receive an array of videos.
+          description: We receive an array with one or more videos.
           content:
             application/json:
               schema: 
@@ -300,7 +301,7 @@ paths:
               schema: 
                 $ref: '#/components/schemas/VideoResponse'
         '400':
-          description: We recaive an error message "Video does not exists"
+          description: We recaive an error message.
     delete:
       tags:
         - Videos
@@ -317,7 +318,7 @@ paths:
             type: string
       responses:
         '204':
-          description: We receive a confirmation message "Video with id {id} was deleted successfully".
+          description: We receive the status code 204 aa confirmation message.
         '400':
           description: We recaive an error message "Video was not found"
   /comments:
@@ -349,7 +350,7 @@ paths:
       security:
       - bearerAuth: []
       summary: Returns an array of comments.
-      description: Only registered users can see all the comments.
+      description: Everybody can see the comments.
       responses:
         '200':
           description: We receive an array of comments.
@@ -369,15 +370,15 @@ paths:
       - bearerAuth: []
       summary: Like videos.
       description: Only registered users can like the videos.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Like'
+      parameters:
+        - name: VideoId
+          in: query
+          description: Likes the selected video.
+          schema:
+            type: number
       responses:
         '201':
-          description: We receive a confirmation message "You liked the video".
+          description: We receive a json with the information of the like.
           content:
             application/json:
               schema: 
@@ -481,15 +482,11 @@ components:
         comment:
           type: string
           example: Excellent video!
-        UserId:
-          type: string
-          example: 7e16f739-6cb9-47e2-9687-5ed82ecb4a52
         VideoId:
           type: number
-          example: 7
+          example: 4
       required:
         - comment
-        - UserId
         - VideoId
     CommentResponse:
       type: object
@@ -509,14 +506,10 @@ components:
     Like:
       type: object
       properties:
-        UserId:
-          type: string
-          example: 7e16f739-6cb9-47e2-9687-5ed82ecb4a52
         VideoId:
           type: number
           example: 7
       required:
-        - UserId
         - VideoId
     LikeResponse:
       type: object

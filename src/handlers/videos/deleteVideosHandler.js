@@ -4,9 +4,9 @@ const deleteVideosHandler = async (req, res) => {
   const { id } = req.params;
   try {
       await deleteVideosController(id);
-      res.status(200).json({ message: `Video with id ${id} was deleted successfully` });
+      res.status(204).json({ message: `Video with id ${id} was deleted successfully` });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+      res.status(400).json({ error: error.message });
   }
 }
 

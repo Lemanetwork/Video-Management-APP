@@ -1,8 +1,12 @@
 const getCommentsController = require("../../controllers/comments/getCommentsController");
 
-const getCommentsHandler = async (req, res) => {    
+const getCommentsHandler = async (req, res) => {
+    let token = false;
+
+    if (req.user) token = true;
+        
     try {
-        const allComments = await getCommentsController();
+        const allComments = await getCommentsController(token);
 
         res.status(200).json(allComments);
     } catch (error) {
