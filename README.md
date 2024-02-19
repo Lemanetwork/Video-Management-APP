@@ -1,4 +1,4 @@
-Video Management APPVideo Management APP
+Video Management APP
 
 This video management web application is a personal project created from the backend side (server + RESTful API + database). It includes a CRUD for videos, a CRUD for users, comments, and likes.
 
